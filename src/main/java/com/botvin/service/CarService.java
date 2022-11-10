@@ -5,22 +5,17 @@ import com.botvin.model.Car;
 import java.util.Random;
 
 public class CarService {
+    private String[] manufacturers = {"BMW", "Mercedes", "Audi", "Opel", "VW"};
+    private String[] engines = {"Diesel", "Benzine", "Electric"};
+    private String[] colors = {"Red", "Yellow", "Green", "Blue", "Black", "White"};
+    private Random random = new Random();
 
-    public static Car create() {
-        Random random = new Random();
-        String[] manufacturers = {"BMW", "Mercedes", "Audi", "Opel", "VW"};
-        String[] engines = {"Diesel", "Benzine", "Electric"};
-        String[] colors = {"Red", "Yellow", "Green", "Blue", "Black", "White"};
-        String manufacturer = manufacturers[random.nextInt(manufacturers.length)];
+    public Car create() {
+        String manufacture = manufacturers[random.nextInt(manufacturers.length)];
         String engine = engines[random.nextInt(engines.length)];
         String color = colors[random.nextInt(colors.length)];
 
-        int countOne = random.nextInt();
-        String count = Integer.toString(countOne);
-        int priceOne = random.nextInt();
-        String price = Integer.toString(priceOne);
-
-        Car car = new Car(manufacturer, engine, color);
+        Car car = new Car(manufacture, engine, color);
         return car;
     }
 

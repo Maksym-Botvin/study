@@ -1,9 +1,8 @@
 package com.botvin.model;
-
 import java.util.Random;
 public class Car {
 
-    Random random = new Random();
+    private Random random = new Random();
 
     private String manufacturer;
     private String engine;
@@ -46,7 +45,6 @@ public class Car {
     public int getPrice() {
         return price;
     }
-
 
     public Car() {
     }
