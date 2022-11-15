@@ -5,8 +5,10 @@ public class Car {
     private Random random = new Random();
 
     private String manufacturer;
-    private String engine;
-    private String color;
+    //private String engine;
+    private Engine engine;
+    //private String color;
+    private Color color;
     private int count;
     private int price;
 
@@ -18,17 +20,17 @@ public class Car {
         return manufacturer;
     }
 
-    public void setEngine(String engine) {
+    public void setEngine(Engine engine){
         this.engine = engine;
     }
-    public String getEngine() {
+    public Engine getEngine(){
         return engine;
     }
 
-    public void setColor(String color) {
+    public void setColor(Color color){
         this.color = color;
     }
-    public String getColor() {
+    public Color getColor(){
         return color;
     }
 
@@ -49,12 +51,17 @@ public class Car {
     public Car() {
     }
 
-    public Car(String manufacturer, String engine, String color) {
+    public Car(String manufacturer, Engine engine, Color color) {
         this.manufacturer = manufacturer;
         this.engine = engine;
         this.color = color;
         this.count = 1;
         this.price = random.nextInt(100000);
+    }
+
+    @Override
+    public String toString() {
+        return manufacturer;
     }
 
 }
