@@ -4,47 +4,25 @@ import com.botvin.model.Car;
 import com.botvin.model.Color;
 import com.botvin.model.Engine;
 import com.botvin.repository.CarRepository;
+import com.botvin.util.RandomGenerator;
 
 import java.util.Random;
 import java.util.Arrays;
 
 public class CarService {
-
-    // Fields
     private Random random = new Random();
     private String[] manufacturers = {"BMW", "Mercedes", "Audi", "Opel", "VW"};
     private String[] typesOfEngines = {"Diesel", "Benzine", "Electric"};
     private CarRepository carRepository;
 
-    // Constructors
+    // Constructor
     public CarService(CarRepository carRepository) {
         this.carRepository = carRepository;
     }
 
-    // Methods
-    /*
-    public Car create() {
-        String manufacture = manufacturers[random.nextInt(manufacturers.length)];
-
-        Engine engine = new Engine(typesOfEngines[random.nextInt(typesOfEngines.length)]);
-
-        Color[] values = Color.values();
-        int length = values.length;
-        int i = new Random().nextInt(length);
-        Color color = values[i];
-
-        Car car = new Car(manufacture, engine, color);
-        return car;
-    }
-
-     */
-
-    // Added methods
-
     public Car create() {
         String manufacture = manufacturers[random.nextInt(manufacturers.length)];
         Engine engine = new Engine(typesOfEngines[random.nextInt(typesOfEngines.length)]);
-
         Car car = new Car(manufacture, engine, getRandomColor());
         carRepository.save(car);
         return car;
@@ -52,10 +30,21 @@ public class CarService {
 
     public void create(int count) {
         for (int i = 0; i < count; i++) {
-            create();
+            carRepository.save(create());
         }
     }
 
+    public int createCars() {
+        int count = RandomGenerator.generateRandomNumber();
+        for (int i = 0; i < count; i++) {
+            String manufacture = RandomGenerator.generateRandomManufacture();
+            Engine engine = new Engine(RandomGenerator.generateRandomTypeOfEngine());
+            Car car = new Car(manufacture, engine, getRandomColor());
+            System.out.println("It's " + (i + 1) + " car: " + car);
+        }
+        int number = count == 0 ? -1 : count;
+        return number;
+    }
 
     private Color getRandomColor() {
         Color[] values = Color.values();
@@ -106,11 +95,9 @@ public class CarService {
         carRepository.updateColor(car.getId(), randomColor);
     }
 
-    //
 
     public void insert(String id) {
         carRepository.insert(id);
-
     }
 
     public static void check(Car car) {
@@ -141,5 +128,4 @@ public class CarService {
         System.out.printf("Manufacturer: %s, Engine: %s, Color: %s, Count: %d, Price: %d \n",
                 car.getManufacturer(), car.getEngine(), car.getColor(), car.getCount(), car.getPrice());
     }
-
 }

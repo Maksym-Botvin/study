@@ -43,7 +43,7 @@ public class CarRepository {
         }
     }
 
-    public void insert(String id) {
+    public void insert(String id) { // ПІД ПИТАННЯМ!!!
         int index = 0;
         for (; index < cars.length; index++) {
             if (cars[index].getId().equals(id)) {
@@ -55,10 +55,6 @@ public class CarRepository {
         }
     }
 
-
-
-
-
         // example: insert(7, Car car)
         // якщо 7 комірка не пуста, то потрібно зсунути існуючі значення масиву вправо, а в 7 комірку записати нове
         // якщо 7 комірка пуста, то перевірити, чи, наприклад, 6 комірка не пуста, якщо пуста, то запистаи в 6 комірку
@@ -67,9 +63,6 @@ public class CarRepository {
 
         // якщо в нас масив масив заповнений (10 машин), то якщо ми хочемо записати нову машину, наприклад, в 2 комірку
         // то викликаємо метод increaseArray(); та робимо зсув "старих" машин вправо
-
-
-
 
 
     public void updateColor(String id, Color color) {

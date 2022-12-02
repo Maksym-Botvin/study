@@ -1,12 +1,15 @@
 package com.botvin.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Random;
 import java.util.UUID;
 
+@Setter
+@Getter
 public class Car {
-
     private Random random = new Random();
-
     private String manufacturer;
     private Engine engine;
     private Color color;
@@ -14,49 +17,7 @@ public class Car {
     private int price;
     private String id;
 
-
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
-
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    public void setEngine(Engine engine) {
-        this.engine = engine;
-    }
-
-    public Engine getEngine() {
-        return engine;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public String getId() {
-        return id;
+    public Car() {
     }
 
     public Car(String manufacturer, Engine engine, Color color) {
@@ -68,15 +29,8 @@ public class Car {
         this.id = UUID.randomUUID().toString();
     }
 
-    /*
     @Override
     public String toString() {
-        return manufacturer;
-    }
-     */
-
-    @Override
-    public String toString() {
-        return String.format("[%s] %s", id, color);
+        return String.format("%s, Engine: %s, color: %s", manufacturer, engine, color);
     }
 }
