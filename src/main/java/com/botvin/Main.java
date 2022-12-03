@@ -7,6 +7,14 @@ import com.botvin.repository.CarRepository;
 public class Main {
     public static void main(String[] args) {
         CarService carService = new CarService(new CarRepository());
-        int cars = carService.createCars();
+
+        //carService.createPassengerCar();
+        carService.createTruck();
+        carService.printAll();
+
+        for (Car car : carService.getAll()) {
+            car.restoreCount();
+        }
+        carService.printAll();
     }
 }
