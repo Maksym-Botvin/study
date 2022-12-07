@@ -8,13 +8,17 @@ public class Main {
     public static void main(String[] args) {
         CarService carService = new CarService(new CarRepository());
 
-        //carService.createPassengerCar();
-        carService.createTruck();
-        carService.printAll();
+        Object firstCar;
+        firstCar = carService.createPassengerCarOrCreateTruck();
+        System.out.println(firstCar);
 
-        for (Car car : carService.getAll()) {
-            car.restoreCount();
-        }
-        carService.printAll();
+        Object secondCar;
+        secondCar = carService.createPassengerCarOrCreateTruck();
+        System.out.println(secondCar);
+
+        System.out.println();
+
+        carService.carEquals(carService.createPassengerCarOrCreateTruck(), carService.createPassengerCarOrCreateTruck());
+
     }
 }
