@@ -13,50 +13,35 @@ public class CarService {
     private CarRepository carRepository;
     private Type type;
 
-    // Constructor
     public CarService(CarRepository carRepository) {
         this.carRepository = carRepository;
     }
 
-    public Car createPassengerCarOrCreateTruck() { // public Car createPassengerCarOrCreateTruck (Type type)
+    public Car createPassengerCarOrCreateTruck() {
+        Type type = Type.randomType();
         String manufacture = RandomGenerator.generateRandomManufacture();
         Engine engine = new Engine(RandomGenerator.generateRandomTypeOfEngine());
-        PassengerCar passengerCar = new PassengerCar(manufacture, engine, getRandomColor(), getPassengerCount());
-        Truck truck = new Truck(manufacture, engine, getRandomColor(), getLoadCapacity());
-        Type type = Type.randomType();
         if (type.equals(Type.CAR)) {
+            PassengerCar passengerCar = new PassengerCar(manufacture, engine, getRandomColor(), getPassengerCount());
             passengerCar.setType(Type.CAR);
-            carRepository.save(passengerCar);
             return passengerCar;
         } else if (type.equals(Type.TRUCK)) {
+            Truck truck = new Truck(manufacture, engine, getRandomColor(), getPassengerCount());
             truck.setType(Type.TRUCK);
-            carRepository.save(truck);
             return truck;
         }
-        Object object;
-        object = type.equals(Type.CAR) ? passengerCar : truck;
-        return passengerCar; //object;
+        return null;
     }
 
     public boolean carEquals(Car firstCar, Car secondCar) {
         if (firstCar.hashCode() == secondCar.hashCode()) {
-            System.out.println("The hashCode of the firstCar == the hashCode of the secondCar");
             if (firstCar.getType().equals(secondCar.getType())) {
-                System.out.println("The type of the firstCar is equals to the type of the secondCar");
             }
+            System.out.println("The cars are the same!");
             return true;
-        }
-        else {
+        } else {
             return false;
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CarService that = (CarService) o;
-        return type == that.type;
     }
 
     @Override
@@ -69,6 +54,7 @@ public class CarService {
         int count = passengerCar.getCount();
         return count;
     }
+
     private int getLoadCapacity() {
         Truck truck = new Truck();
         int loadCapacity = truck.getLoadCapacity();
@@ -81,22 +67,6 @@ public class CarService {
             carRepository.save(create());
         }
     }
-
- */
-
-/*
-    public int createCars() {
-        int count = RandomGenerator.generateRandomNumber();
-        for (int i = 0; i < count; i++) {
-            String manufacture = RandomGenerator.generateRandomManufacture();
-            Engine engine = new Engine(RandomGenerator.generateRandomTypeOfEngine());
-            Car car = new Car(manufacture, engine, getRandomColor());
-            System.out.println("It's " + (i + 1) + " car: " + car);
-        }
-        int number = count == 0 ? -1 : count;
-        return number;
-    }
-
  */
 
     private Color getRandomColor() {

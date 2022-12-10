@@ -1,6 +1,7 @@
 package com.botvin;
 
 import com.botvin.model.Car;
+import com.botvin.model.Type;
 import com.botvin.service.CarService;
 import com.botvin.repository.CarRepository;
 
@@ -18,7 +19,10 @@ public class Main {
 
         System.out.println();
 
-        carService.carEquals(carService.createPassengerCarOrCreateTruck(), carService.createPassengerCarOrCreateTruck());
+        System.out.println(carService.carEquals(carService.createPassengerCarOrCreateTruck(), carService.createPassengerCarOrCreateTruck()));
 
+        System.out.println();
+
+        System.out.println(carService.createPassengerCarOrCreateTruck());
     }
 }
