@@ -6,7 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 
-public class Truck extends Car implements CountRestore {
+public class Truck extends Car {
     private int loadCapacity;
 
 
@@ -26,7 +26,7 @@ public class Truck extends Car implements CountRestore {
 
     @Override
     public String toString() {
-        return String.format("manufacturer = %s; Engine = %s; Color = %s; LoadCapacity = %d; ID = %s; typeOfCar = %s)",
+        return String.format("manufacturer = %s; Engine = %s; Color = %s; LoadCapacity = %d; ID = %s; typeOfCar = %s",
                 getManufacturer(), getEngine(), getColor(), getLoadCapacity(), getId(), getType());
     }
 }

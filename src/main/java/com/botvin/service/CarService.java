@@ -6,150 +6,61 @@ import com.botvin.util.RandomGenerator;
 
 import java.util.Random;
 import java.util.Arrays;
-import java.util.regex.PatternSyntaxException;
 
 public class CarService {
     private Random random = new Random();
-    //private String[] manufacturers = {"BMW", "Mercedes", "Audi", "Opel", "VW"};
-    //private String[] typesOfEngines = {"Diesel", "Benzine", "Electric"};
     private CarRepository carRepository;
+    private Type type;
 
-    // Constructor
     public CarService(CarRepository carRepository) {
         this.carRepository = carRepository;
     }
-/*
-    public Car create() {
-        String manufacture = manufacturers[random.nextInt(manufacturers.length)];
-        Engine engine = new Engine(typesOfEngines[random.nextInt(typesOfEngines.length)]);
-        Car car = new Car(manufacture, engine, getRandomColor());
-        carRepository.save(car);
-        return car;
-    }
- */
-    public PassengerCar createPassengerCar () {
+
+    public Car createPassengerCarOrCreateTruck() {
+        Type type = Type.randomType();
         String manufacture = RandomGenerator.generateRandomManufacture();
         Engine engine = new Engine(RandomGenerator.generateRandomTypeOfEngine());
-        PassengerCar passengerCar = new PassengerCar(manufacture, engine, getRandomColor(), getPassengerCount());
-        passengerCar.setType(Type.CAR);
-        carRepository.save(passengerCar);
-        return passengerCar;
+        if (type.equals(Type.CAR)) {
+            PassengerCar passengerCar = new PassengerCar(manufacture, engine, getRandomColor(), getPassengerCount());
+            passengerCar.setType(Type.CAR);
+            return passengerCar;
+        } else if (type.equals(Type.TRUCK)) {
+            Truck truck = new Truck(manufacture, engine, getRandomColor(), getPassengerCount());
+            truck.setType(Type.TRUCK);
+            return truck;
+        }
+        return null;
     }
 
-    public Truck createTruck () {
-        String manufacture = RandomGenerator.generateRandomManufacture();
-        Engine engine = new Engine(RandomGenerator.generateRandomTypeOfEngine());
-        Truck truck = new Truck(manufacture, engine, getRandomColor(), getTruckCount());
-        truck.setType(Type.TRUCK);
-        carRepository.save(truck);
-        return truck;
-    }
-/*
-    public int createTruck(RandomGenerator randomGenerator) {
-        final int count = randomGenerator.generateRandomNumber();
-        if (count != 0) {
-            for (int i = 0; i < count; i++) {
-                Truck truck = createTruck();
-                print(truck);
+    public boolean carEquals(Car firstCar, Car secondCar) {
+        if (firstCar.hashCode() == secondCar.hashCode()) {
+            if (firstCar.getType().equals(secondCar.getType())) {
+                System.out.println("The cars are the same!");
             }
-            return count;
+            return true;
+        } else {
+            return false;
         }
-        return -1;
     }
-
-    public int createPassengerCar (RandomGenerator randomGenerator) {
-        int count = RandomGenerator.generateRandomNumber();
-        if (count != 0) {
-            for (int i = 0; i < count; i++) {
-                PassengerCar passengerCar = new PassengerCar();
-                print(passengerCar);
-            }
-        }
-        int number = count == 0 ? -1 : count;
-        return number;
-    }
-
- */
-/*
-    public int createTruck (RandomGenerator randomGenerator) {
-        int count = RandomGenerator.generateRandomNumber();
-        if (count != 0) {
-            for (int i = 0; i < count; i++) {
-                Truck truck = new Truck();
-                print(truck);
-            }
-        }
-        int number = count == 0 ? -1 : count;
-        return number;
-    }
-
- */
-
-/*
-    public int createPassengerCar() {
-        int count = RandomGenerator.generateRandomNumber();
-        for (int i = 0; i < count; i++) {
-            String manufacture = RandomGenerator.generateRandomManufacture();
-            Engine engine = new Engine(RandomGenerator.generateRandomTypeOfEngine());
-            //Color color = null;
-            PassengerCar passengerCar = new PassengerCar(manufacture, engine, getRandomColor(), getPassengerCount()); // String manufacture, Engine engine, Color color, int passengerCount
-            System.out.println("It's " + (i + 1) + " passengerCar: " + passengerCar);
-        }
-        int number = count == 0 ? -1 : count;
-        return number;
-    }
-
- */
-
-
-/*
-    public int createTruck() {
-        int count = RandomGenerator.generateRandomNumber();
-        for (int i = 0; i < count; i++) {
-            String manufacture = RandomGenerator.generateRandomManufacture();
-            Engine engine = new Engine(RandomGenerator.generateRandomTypeOfEngine());
-            //Color color = null;
-            PassengerCar passengerCar = new PassengerCar(manufacture, engine, getRandomColor(), 50); // String manufacture, Engine engine, Color color, int passengerCount
-            System.out.println("It's " + (i + 1) + " passengerCar: " + passengerCar);
-        }
-        int number = count == 0 ? -1 : count;
-        return number;
-    }
-
- */
 
     private int getPassengerCount() {
         PassengerCar passengerCar = new PassengerCar();
         int count = passengerCar.getCount();
         return count;
     }
-    private int getTruckCount() {
+
+    private int getLoadCapacity() {
         Truck truck = new Truck();
-        int count = truck.getCount();
-        return count;
+        int loadCapacity = truck.getLoadCapacity();
+        return loadCapacity;
     }
+
 /*
     public void create(int count) {
         for (int i = 0; i < count; i++) {
             carRepository.save(create());
         }
     }
-
- */
-
-/*
-    public int createCars() {
-        int count = RandomGenerator.generateRandomNumber();
-        for (int i = 0; i < count; i++) {
-            String manufacture = RandomGenerator.generateRandomManufacture();
-            Engine engine = new Engine(RandomGenerator.generateRandomTypeOfEngine());
-            Car car = new Car(manufacture, engine, getRandomColor());
-            System.out.println("It's " + (i + 1) + " car: " + car);
-        }
-        int number = count == 0 ? -1 : count;
-        return number;
-    }
-
  */
 
     private Color getRandomColor() {
