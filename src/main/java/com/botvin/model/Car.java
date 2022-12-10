@@ -3,6 +3,7 @@ package com.botvin.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -34,5 +35,18 @@ public abstract class Car implements CountRestore {
     @Override
     public String toString() {
         return String.format("%s, Engine: %s, color: %s", manufacturer, engine, color);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Car car = (Car) o;
+        return type == car.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type);
     }
 }

@@ -4,7 +4,6 @@ import com.botvin.model.*;
 import com.botvin.repository.CarRepository;
 import com.botvin.util.RandomGenerator;
 
-import java.util.Objects;
 import java.util.Random;
 import java.util.Arrays;
 
@@ -36,25 +35,12 @@ public class CarService {
     public boolean carEquals(Car firstCar, Car secondCar) {
         if (firstCar.hashCode() == secondCar.hashCode()) {
             if (firstCar.getType().equals(secondCar.getType())) {
+                System.out.println("The cars are the same!");
             }
-            System.out.println("The cars are the same!");
             return true;
         } else {
             return false;
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CarService that = (CarService) o;
-        return type == that.type;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(type);
     }
 
     private int getPassengerCount() {
