@@ -1,5 +1,6 @@
 package com.botvin.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 @Setter
 @Getter
+@EqualsAndHashCode
 public abstract class Car implements CountRestore {
     private Random random = new Random();
     private String manufacturer;
