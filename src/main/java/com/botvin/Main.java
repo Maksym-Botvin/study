@@ -2,13 +2,16 @@ package com.botvin;
 
 import com.botvin.model.Car;
 import com.botvin.model.Type;
+import com.botvin.model.UserInputException;
 import com.botvin.service.CarService;
 import com.botvin.repository.CarRepository;
 
-public class Main {
-    public static void main(String[] args) {
-        CarService carService = new CarService(new CarRepository());
+import java.util.Optional;
 
+public class Main {
+    public static void main(String[] args) throws UserInputException {
+        CarService carService = new CarService(new CarRepository());
+/*
         Object firstCar;
         firstCar = carService.createPassengerCarOrCreateTruck();
         System.out.println(firstCar);
@@ -24,5 +27,21 @@ public class Main {
         System.out.println();
 
         System.out.println(carService.createPassengerCarOrCreateTruck());
+
+        System.out.println();
+
+ */
+        Car car = carService.createPassengerCarOrCreateTruck();
+
+        carService.printManufacturerAndCount(car);
+
+        carService.printColor(car);
+
+        carService.checkCount(car);
+
+        carService.printEngineInfo(car);
+
+        carService.printInfo(car);
+
     }
 }

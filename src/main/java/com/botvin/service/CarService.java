@@ -4,13 +4,13 @@ import com.botvin.model.*;
 import com.botvin.repository.CarRepository;
 import com.botvin.util.RandomGenerator;
 
+import java.util.Optional;
 import java.util.Random;
 import java.util.Arrays;
 
 public class CarService {
     private Random random = new Random();
     private CarRepository carRepository;
-    private Type type;
 
     public CarService(CarRepository carRepository) {
         this.carRepository = carRepository;
@@ -43,6 +43,46 @@ public class CarService {
         }
     }
 
+    public void printManufacturerAndCount(final Car car) {
+        Optional.ofNullable(car).ifPresent(value -> {
+            System.out.printf("Manufacturer: %s, count: %d.\n", value.getManufacturer(), value.getCount());
+        });
+    }
+
+    public void printColor(final Car car) {
+        Car value = Optional.ofNullable(car).orElse(new PassengerCar(getRandomManufacture(), getRandomEngine(),
+                getRandomColor(), getPassengerCount()));
+        System.out.println("Color: " + car.getColor().toString());
+    }
+
+    public void checkCount(final Car car) throws UserInputException {
+        Car value = Optional.ofNullable(car)
+                .filter(valueFilter -> valueFilter.getCount() >= 0) // valueFilter.getCount() >= 10
+                .orElseThrow(() -> new UserInputException());
+        System.out.printf("Manufacturer: %s, count: %d.\n", value.getManufacturer(), value.getCount());
+    }
+
+    public void printEngineInfo(final Car car) {
+        Car value = Optional.ofNullable(car)
+                .orElseGet(() -> {
+                    System.out.println("Create new car!");
+                    return createPassengerCarOrCreateTruck();
+                });
+        Optional.of(value.getEngine())
+                .map(eng -> System.out.printf("Engine power: %d.\n", eng.getPower()));
+    }
+
+    public void printInfo(final Car car) {
+        Optional.ofNullable(car).ifPresentOrElse(
+                value -> print(car),
+                () -> print(createPassengerCarOrCreateTruck())
+        );
+    }
+
+    public void print(final Car car) {
+        System.out.println(car);
+    }
+
     private int getPassengerCount() {
         PassengerCar passengerCar = new PassengerCar();
         int count = passengerCar.getCount();
@@ -62,6 +102,16 @@ public class CarService {
         }
     }
  */
+
+    private Engine getRandomEngine() {
+        Engine engine = new Engine(RandomGenerator.generateRandomTypeOfEngine());
+        return engine;
+    }
+
+    private String getRandomManufacture() {
+        String manufacture = RandomGenerator.generateRandomManufacture();
+        return manufacture;
+    }
 
     private Color getRandomColor() {
         Color[] values = Color.values();
@@ -141,9 +191,11 @@ public class CarService {
         }
     }
 
-
+/*
     public static void print(Car car) {
         System.out.printf("Manufacturer: %s, Engine: %s, Color: %s, Count: %d, Price: %d \n",
                 car.getManufacturer(), car.getEngine(), car.getColor(), car.getCount(), car.getPrice());
     }
+
+ */
 }
