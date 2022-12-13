@@ -16,6 +16,34 @@ public class CarService {
         this.carRepository = carRepository;
     }
 
+    public Car create() {
+        Type type = Type.randomType();
+        String manufacture = RandomGenerator.generateRandomManufacture();
+        Engine engine = new Engine(RandomGenerator.generateRandomTypeOfEngine());
+        if (type.equals(Type.CAR)) {
+            PassengerCar passengerCar = new PassengerCar(manufacture, engine, getRandomColor(), getPassengerCount());
+            passengerCar.setType(Type.CAR);
+            return passengerCar;
+        } else if (type.equals(Type.TRUCK)) {
+            Truck truck = new Truck(manufacture, engine, getRandomColor(), getPassengerCount());
+            truck.setType(Type.TRUCK);
+            return truck;
+        }
+        return null;
+    }
+
+    public void createArrayOfCars(final int sizeOfArray) {
+        for (int i = 0; i < sizeOfArray; i++) {
+            carRepository.save(create());
+        }
+    }
+
+    public void create(final int count) {
+        for (int i = 0; i < count; i++) {
+            carRepository.save(create());
+        }
+    }
+
     public Car createPassengerCarOrCreateTruck() {
         Type type = Type.randomType();
         String manufacture = RandomGenerator.generateRandomManufacture();
@@ -69,7 +97,10 @@ public class CarService {
                     return createPassengerCarOrCreateTruck();
                 });
         Optional.of(value.getEngine())
-                .map(eng -> System.out.printf("Engine power: %d.\n", eng.getPower()));
+                .map(eng -> {
+                    System.out.printf("Engine power: %d.\n", eng.getPower());
+                    return value.getEngine().toString();
+                });
     }
 
     public void printInfo(final Car car) {
@@ -95,14 +126,6 @@ public class CarService {
         return loadCapacity;
     }
 
-/*
-    public void create(int count) {
-        for (int i = 0; i < count; i++) {
-            carRepository.save(create());
-        }
-    }
- */
-
     private Engine getRandomEngine() {
         Engine engine = new Engine(RandomGenerator.generateRandomTypeOfEngine());
         return engine;
@@ -121,9 +144,17 @@ public class CarService {
 
     public void printAll() {
         Car[] all = carRepository.getAll();
-        System.out.println(Arrays.toString(all));
+        for (Car car : all) {
+            System.out.println(car);
+        }
     }
 
+    /*
+        public void printAll() {
+        Car[] all = carRepository.getAll();
+        System.out.println(Arrays.toString(all));
+    }
+     */
     public Car[] getAll() {
         return carRepository.getAll();
     }
