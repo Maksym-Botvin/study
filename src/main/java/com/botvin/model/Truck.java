@@ -26,7 +26,7 @@ public class Truck extends Car {
 
     @Override
     public String toString() {
-        return String.format("manufacturer = %s; Engine = %s; Color = %s; LoadCapacity = %d; ID = %s; typeOfCar = %s",
-                getManufacturer(), getEngine(), getColor(), getLoadCapacity(), getId(), getType());
+        return String.format("manufacturer = %s; Engine = %s; Color = %s; LoadCapacity = %d; ID = %s; typeOfCar = %s; count = %d",
+                getManufacturer(), getEngine(), getColor(), getLoadCapacity(), getId(), getType(), getCount());
     }
 }
