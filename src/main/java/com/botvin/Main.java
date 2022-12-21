@@ -1,6 +1,8 @@
 package com.botvin;
 
+import com.botvin.container.GreenericContainer;
 import com.botvin.model.Car;
+import com.botvin.model.PassengerCar;
 import com.botvin.model.UserInputException;
 import com.botvin.service.CarService;
 import com.botvin.repository.CarRepository;
@@ -10,11 +12,11 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Main {
-    public static void main(String[] args) throws UserInputException {
+    public static void main(String[] args) throws UserInputException, InstantiationException, IllegalAccessException {
 
         CarService carService = new CarService(new CarRepository());
 /*
-        Lesson 11
+        //Lesson 11
         Object firstCar;
         firstCar = carService.createPassengerCarOrCreateTruck();
         System.out.println(firstCar);
@@ -51,6 +53,7 @@ public class Main {
 
  */
 
+/*
         // Lesson 13
 
         Random random = new Random();
@@ -79,6 +82,24 @@ public class Main {
         System.out.println(elementToSearch + " - wanted item");
         int index = AlgorithmUtil.binarySearch(carsIds, elementToSearch);
         System.out.println("Еhe index of the searched element " + index);
+*/
+        // Lesson 14
+
+        Car car = carService.create();
+
+        GreenericContainer<Car> greenericContainer = new GreenericContainer<>(car);
+
+        greenericContainer.print(); // 1-st method
+        System.out.println();
+
+        greenericContainer.increaseCount(); // 2-nd method
+        greenericContainer.print();
+        System.out.println();
+
+        greenericContainer.increaseCount(5.5); // 3-rd method
+        greenericContainer.print();
+        System.out.println();
 
     }
+
 }

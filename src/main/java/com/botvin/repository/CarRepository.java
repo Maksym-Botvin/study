@@ -3,7 +3,8 @@ package com.botvin.repository;
 import com.botvin.model.Car;
 import com.botvin.model.Color;
 
-public class CarRepository {
+public class CarRepository implements ParameterizedInterfaceCarRepository<Car> {
+
     private static Car[] cars = new Car[10];
 
     public void save(Car car) {
@@ -55,14 +56,14 @@ public class CarRepository {
         }
     }
 
-        // example: insert(7, Car car)
-        // якщо 7 комірка не пуста, то потрібно зсунути існуючі значення масиву вправо, а в 7 комірку записати нове
-        // якщо 7 комірка пуста, то перевірити, чи, наприклад, 6 комірка не пуста, якщо пуста, то запистаи в 6 комірку
-        // if we have empty cell before index -> use first empty cell insted of
-        // если у нас есть пустая ячейка перед индексом -> использовать первую пустую ячейку вместо
+    // example: insert(7, Car car)
+    // якщо 7 комірка не пуста, то потрібно зсунути існуючі значення масиву вправо, а в 7 комірку записати нове
+    // якщо 7 комірка пуста, то перевірити, чи, наприклад, 6 комірка не пуста, якщо пуста, то запистаи в 6 комірку
+    // if we have empty cell before index -> use first empty cell insted of
+    // если у нас есть пустая ячейка перед индексом -> использовать первую пустую ячейку вместо
 
-        // якщо в нас масив масив заповнений (10 машин), то якщо ми хочемо записати нову машину, наприклад, в 2 комірку
-        // то викликаємо метод increaseArray(); та робимо зсув "старих" машин вправо
+    // якщо в нас масив масив заповнений (10 машин), то якщо ми хочемо записати нову машину, наприклад, в 2 комірку
+    // то викликаємо метод increaseArray(); та робимо зсув "старих" машин вправо
 
 
     public void updateColor(String id, Color color) {
@@ -100,4 +101,5 @@ public class CarRepository {
         System.arraycopy(cars, 0, newCars, 0, cars.length);
         cars = newCars;
     }
+
 }
