@@ -1,5 +1,6 @@
 package com.botvin;
 
+import com.botvin.container.CarList;
 import com.botvin.container.GreenericContainer;
 import com.botvin.model.Car;
 import com.botvin.model.PassengerCar;
@@ -83,6 +84,8 @@ public class Main {
         int index = AlgorithmUtil.binarySearch(carsIds, elementToSearch);
         System.out.println("Еhe index of the searched element " + index);
 */
+/*
+
         // Lesson 14
 
         Car car = carService.create();
@@ -99,6 +102,45 @@ public class Main {
         greenericContainer.increaseCount(5.5); // 3-rd method
         greenericContainer.print();
         System.out.println();
+*/
+
+        // Lesson 15
+
+        CarList<? extends Car> carList = new CarList<>();
+        Car car1 = carService.create();
+        carList.addAtTheBeginning(car1);
+        carList.print();
+
+        System.out.println();
+
+        Car car2 = carService.create();
+        carList.addAtTheBeginning(car2);
+        carList.print();
+
+        System.out.println();
+
+        Car car3 = carService.create();
+        carList.addAtTheEnd(car3);
+        carList.print();
+
+        System.out.println();
+
+        System.out.println(carList.getByTheValue(car1) + " - index of the car");
+
+        System.out.println();
+
+        Car car4 = carService.create();
+        carList.insertValueByTheIndex(1, car4);
+        carList.print();
+
+        System.out.println();
+
+        carList.deleteByTheIndex(1);
+        carList.print();
+
+        System.out.println();
+
+        System.out.println(carList.getAllCarCount() + " total count");
 
     }
 
