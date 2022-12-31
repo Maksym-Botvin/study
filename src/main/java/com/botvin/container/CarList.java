@@ -4,8 +4,6 @@ import com.botvin.model.Car;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Iterator;
-
 @Getter
 @Setter
 public class CarList<T extends Car> {

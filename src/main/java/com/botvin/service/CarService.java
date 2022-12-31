@@ -4,9 +4,7 @@ import com.botvin.model.*;
 import com.botvin.repository.CarRepository;
 import com.botvin.util.RandomGenerator;
 
-import java.util.Optional;
-import java.util.Random;
-import java.util.Arrays;
+import java.util.*;
 
 public class CarService {
     private Random random = new Random();
@@ -222,6 +220,31 @@ public class CarService {
         }
     }
 
+    // New CarServices' methods
+    public HashMap<String, Integer> returnManufacureAndCount(Car[] cars) {
+        HashMap<String, Integer> map = new HashMap<>();
+        for (Car car : cars) {
+            map.put(car.getManufacturer(), car.getCount());
+        }
+        return map;
+    }
+
+    public HashMap<Integer, LinkedList> returnEnginePowerAndList(Car[] cars) {
+        HashMap<Integer, LinkedList> map = new HashMap<>();
+        LinkedList<Car> carList;
+        for (Car car : cars) {
+            int power = car.getEngine().getPower();
+            if (map.containsKey(power)) {
+                carList = map.get(power);
+                carList.add(car);
+            } else {
+                map.put(power, new LinkedList<>());
+                carList = map.get(power);
+                carList.add(car);
+            }
+        }
+        return map;
+    }
 /*
     public static void print(Car car) {
         System.out.printf("Manufacturer: %s, Engine: %s, Color: %s, Count: %d, Price: %d \n",
