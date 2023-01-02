@@ -54,49 +54,49 @@ public class CarTree<T extends Car> {
         }
     }
 
-    public <T extends Car> void createBinaryTree(BT_Node bt_node, T car) {
-        if (car.getCount() < bt_node.value) {
-            if (bt_node.left != null) {
-                insert(bt_node.left, car.getCount());
+    public <T extends Car> void createBinaryTree(BinaryTreeNode binaryTreeNode, T car) {
+        if (car.getCount() < binaryTreeNode.value) {
+            if (binaryTreeNode.left != null) {
+                insert(binaryTreeNode.left, car.getCount());
             } else {
-                System.out.println(" Inserted " + car.getCount() + " to left of " + bt_node.value);
-                bt_node.left = new BT_Node(car.getCount());
+                System.out.println(" Inserted " + car.getCount() + " to left of " + binaryTreeNode.value);
+                binaryTreeNode.left = new BinaryTreeNode(car.getCount());
             }
-        } else if (car.getCount() > bt_node.value) {
-            if (bt_node.right != null) {
-                insert(bt_node.right, car.getCount());
+        } else if (car.getCount() > binaryTreeNode.value) {
+            if (binaryTreeNode.right != null) {
+                insert(binaryTreeNode.right, car.getCount());
             } else {
                 System.out.println("  Inserted " + car.getCount() + " to right of "
-                        + bt_node.value);
-                bt_node.right = new BT_Node(car.getCount());
+                        + binaryTreeNode.value);
+                binaryTreeNode.right = new BinaryTreeNode(car.getCount());
             }
         }
     }
 
-    public void insert(BT_Node bt_node, int value) {
-        if (value < bt_node.value) {
-            if (bt_node.left != null) {
-                insert(bt_node.left, value);
+    public void insert(BinaryTreeNode binaryTreeNode, int value) {
+        if (value < binaryTreeNode.value) {
+            if (binaryTreeNode.left != null) {
+                insert(binaryTreeNode.left, value);
             } else {
-                System.out.println(" Inserted " + value + " to left of " + bt_node.value);
-                bt_node.left = new BT_Node(value);
+                System.out.println(" Inserted " + value + " to left of " + binaryTreeNode.value);
+                binaryTreeNode.left = new BinaryTreeNode(value);
             }
-        } else if (value > bt_node.value) {
-            if (bt_node.right != null) {
-                insert(bt_node.right, value);
+        } else if (value > binaryTreeNode.value) {
+            if (binaryTreeNode.right != null) {
+                insert(binaryTreeNode.right, value);
             } else {
                 System.out.println("  Inserted " + value + " to right of "
-                        + bt_node.value);
-                bt_node.right = new BT_Node(value);
+                        + binaryTreeNode.value);
+                binaryTreeNode.right = new BinaryTreeNode(value);
             }
         }
     }
 
-    public void traverseInOrder(BT_Node bt_node) {
-        if (bt_node != null) {
-            traverseInOrder(bt_node.left);
-            System.out.print(" " + bt_node.value);
-            traverseInOrder(bt_node.right);
+    public void traverseInOrder(BinaryTreeNode binaryTreeNode) {
+        if (binaryTreeNode != null) {
+            traverseInOrder(binaryTreeNode.left);
+            System.out.print(" " + binaryTreeNode.value);
+            traverseInOrder(binaryTreeNode.right);
         }
     }
 

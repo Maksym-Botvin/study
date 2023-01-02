@@ -30,7 +30,7 @@ public abstract class Car implements CountRestore {
         this.engine = engine;
         this.color = color;
         this.count = 1;
-        this.price = random.nextInt(100000);
+        this.price = random.nextInt(100_000);
         this.id = UUID.randomUUID().toString();
     }
 
