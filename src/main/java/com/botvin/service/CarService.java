@@ -5,6 +5,9 @@ import com.botvin.repository.CarRepository;
 import com.botvin.util.RandomGenerator;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class CarService {
     private Random random = new Random();
@@ -220,7 +223,7 @@ public class CarService {
         }
     }
 
-    // New CarServices' methods
+    // New CarServices' methods from 16-th lesson
     public HashMap<String, Integer> returnManufacureAndCount(Car[] cars) {
         HashMap<String, Integer> map = new HashMap<>();
         for (Car car : cars) {
@@ -245,6 +248,95 @@ public class CarService {
         }
         return map;
     }
+
+    // New CarServices' methods from 17-th lesson
+    public List<Car> findManafacturerByPrice(final List<Car> cars) {
+        final List<Car> expensiveCar = cars.stream()
+                .filter(e -> e.getPrice() > 50_000)
+                .peek(System.out::println)
+                .collect(Collectors.toList());
+        return expensiveCar;
+    }
+
+    public int countSum(final List<Car> cars) {
+        final int sum = cars.stream()
+                .map(x -> x.getCount())
+                .reduce(0, Integer::sum);
+        System.out.println("Sum of cars: " + sum);
+        return sum;
+    }
+
+    //mapToMap Відсортувати машини за виробником, прибрати дублікати, перетворити на
+    //Map, де ключ - це id машини, а значення - це її тип (зберігаючи порядок)
+    public LinkedHashMap<String, Type> mapToMap(final List<Car> cars) {
+        LinkedHashMap<String, Type> mapCars = cars.stream()
+                .distinct()
+                .sorted(Comparator.comparing(Car::getManufacturer))
+                .collect(Collectors.toMap(Car::getId, Car::getType, (key1, key2) -> key1, LinkedHashMap::new));
+        return mapCars;
+    }
+
+    // statistic Отримати статистику за ціною всіх машин
+    public Map<String, Integer> statistic(final List<Car> cars) {
+        Map<String, Integer> statisticOfCars = cars.stream()
+                .collect(Collectors.toMap(Car::getManufacturer, Car::getPrice, (o1, o2) -> o1));
+        System.out.println(statisticOfCars);
+        return statisticOfCars;
+    }
+
+    //priceCheck Написати реалізацію предиката, який перевіряє, що в переданій колекції в усіх
+    //машин є ціна, вища за число Х.
+    public void priceCheck(final List<Car> cars) {
+        Predicate<Car> isExpensive = e -> e.getPrice() > 50_000;
+        cars.stream()
+                .filter(isExpensive).forEach(System.out::println);
+    }
+
+    //mapToObject Написати реалізацію Function, яка приймає Map<String, Object> і створює
+    //конкретну машину на підставі полів Map
+    public Car mapToObject(final Map<String, Object> map) {
+        Function<Map, Car> function = m -> {
+            if (m.get("type") == Type.CAR) {
+                return new PassengerCar();
+            } else if (m.get("type") == Type.TRUCK) {
+                return new Truck();
+            } else {
+                throw new NullPointerException("Type of car not exist");
+            }
+        };
+
+        return function.andThen(c -> {
+                    if (map.get("manufacturer") != null) {
+                        c.setManufacturer((String) map.get("manufacturer"));
+                    }
+                    if (map.get("color") != null) {
+                        c.setColor((Color) map.get("color"));
+                    }
+                    if (map.get("count") != null) {
+                        c.setCount((int) map.get("count"));
+                    }
+                    if (map.get("price") != null) {
+                        c.setPrice((int) map.get("price"));
+                    }
+                    return c;
+                })
+                .apply(map);
+    }
+
+    //innerList метод приймає колекцію List<List<Car>>, дістає машини, сортує за кольорами,
+    //виводить інформацію на консоль, фільтрує за ціною, збирає в Map, де ключ - це колір, а
+    //значення - к-ть машин
+    public Map<Color, Long> innerList(final List<List<Car>> cars) {
+        Predicate<Car> isExpensive = e -> e.getPrice() > 50_000;
+        Map<Color, Long> sortedCars = cars.stream()
+                .flatMap(list -> list.stream())
+                .sorted(Comparator.comparing(Car::getColor))
+                .peek(System.out::println)
+                .filter(isExpensive)
+                .collect(Collectors.groupingBy(Car::getColor, Collectors.counting()));
+        return sortedCars;
+    }
+
 /*
     public static void print(Car car) {
         System.out.printf("Manufacturer: %s, Engine: %s, Color: %s, Count: %d, Price: %d \n",

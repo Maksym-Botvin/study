@@ -6,13 +6,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BT_Node<T extends Car> {
+public class BinaryTreeNode<T extends Car> {
     private T car;
     protected int value;
-    protected BT_Node left;
-    protected BT_Node right;
+    protected BinaryTreeNode left;
+    protected BinaryTreeNode right;
 
-    public BT_Node(int value) {
+    public BinaryTreeNode(int value) {
         this.value = value;
         right = null;
         left = null;

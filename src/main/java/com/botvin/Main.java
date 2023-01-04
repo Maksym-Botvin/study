@@ -1,12 +1,10 @@
 package com.botvin;
 
 import com.botvin.container.*;
-import com.botvin.model.Car;
-import com.botvin.model.PassengerCar;
-import com.botvin.model.UserInputException;
+import com.botvin.model.*;
 import com.botvin.service.CarService;
 import com.botvin.repository.CarRepository;
-import com.botvin.util.AlgorithmUtil;
+import com.botvin.util.RandomGenerator;
 
 import java.util.*;
 
@@ -141,6 +139,8 @@ public class Main {
 
         System.out.println(carList.getAllCarCount() + " total count");
 */
+/*
+
         // Lesson 16
 
         Car car = carService.create();
@@ -158,7 +158,7 @@ public class Main {
 
         // Create binary tree
         CarTree<Car> carCarTree = new CarTree<>();
-        BT_Node root = new BT_Node<>(car.getCount());
+        BinaryTreeNode root = new BinaryTreeNode<>(car.getCount());
         carCarTree.createBinaryTree(root, car1);
         carCarTree.createBinaryTree(root, car2);
         carCarTree.createBinaryTree(root, car3);
@@ -193,11 +193,92 @@ public class Main {
         carService.printAll();
         System.out.println();
 
+        // Отримує список Car і повертає Map, де ключ це Manufacturer, а значення - к-сть машин
+        // (потрібно зробити так, щоб не було перезатирання, а к-сть машин збільшувалася)
         HashMap<String, Integer> mapManufacturer = carService.returnManufacureAndCount(carService.getAll());
         System.out.println(mapManufacturer.toString());
 
+        // Отримує список Car і повертає Map, де ключ це Engine/power, а значення - це список Car з цим двигуном
         HashMap<Integer, LinkedList> mapEngine = carService.returnEnginePowerAndList(carService.getAll());
         System.out.println(mapEngine.toString());
+*/
+
+        // Lesson 17
+
+        Car car = carService.create();
+        Car car1 = carService.create();
+        Car car2 = carService.create();
+        Car car3 = carService.create();
+        Car car4 = carService.create();
+
+        List<Car> carList = new ArrayList<>();
+        carList.add(car);
+        carList.add(car1);
+        carList.add(car2);
+        carList.add(car3);
+        carList.add(car4);
+
+        //findManafacturerByPrice Знайти машини дорожчі за ціну Х і показати їхнього виробника
+        List<Car> carsList1 = carService.findManafacturerByPrice(carList);
+
+        System.out.println();
+
+        //countSum Порахувати суму машин через reduce
+        int sum = carService.countSum(carsList1);
+
+        System.out.println();
+
+        //mapToMap Відсортувати машини за виробником, прибрати дублікати, перетворити на
+        //Map, де ключ - це id машини, а значення - це її тип (зберігаючи порядок)
+        System.out.println(carService.mapToMap(carsList1));
+
+        System.out.println();
+
+        //statistic Отримати статистику за ціною всіх машин
+        Map<String, Integer> mapStatistic = carService.statistic(carList);
+
+        System.out.println();
+
+        //priceCheck Написати реалізацію предиката, який перевіряє, що в переданій колекції в усіх
+        //машин є ціна, вища за число Х.
+        carService.priceCheck(carList);
+
+        System.out.println();
+
+        //mapToObject Написати реалізацію Function, яка приймає Map<String, Object> і створює
+        //конкретну машину на підставі полів Map
+        Map<String, Object> map = new HashMap<>();
+        map.put("type", Type.randomType());
+        map.put("manufacturer", RandomGenerator.generateRandomManufacture());
+        map.put("color", Color.BLACK);
+        map.put("count", car.getCount());
+        map.put("price", car.getPrice());
+
+        Car newCar = carService.mapToObject(map);
+        carService.print(newCar);
+
+        System.out.println();
+
+        //innerList метод приймає колекцію List<List<Car>>, дістає машини, сортує за кольорами,
+        //виводить інформацію на консоль, фільтрує за ціною, збирає в Map, де ключ - це колір, а
+        //значення - к-ть машин
+        carService.createArrayOfCars(5);
+        List<Car> carList1 = new ArrayList<>();
+        for (Car element : carService.getAll()) {
+            carList1.add(element);
+        }
+
+        List<Car> carList2 = new ArrayList<>();
+        for (Car element : carService.getAll()) {
+            carList2.add(element);
+        }
+
+        List<List<Car>> lists = new ArrayList<>();
+        lists.add(carList);
+        lists.add(carList1);
+        lists.add(carList2);
+
+        carService.innerList(lists);
 
     }
 
