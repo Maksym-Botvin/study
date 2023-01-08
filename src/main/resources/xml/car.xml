@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Car>
+	<String>manufacturer</String>
+	<Engine>engine</Engine>
+	<Color>color</Color>
+	<Type>type</Type>
+	<int>count</int>
+	<int>price</int>
+	<String>id</String>
+</Car>

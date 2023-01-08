@@ -4,9 +4,12 @@ import com.botvin.model.*;
 import com.botvin.repository.CarRepository;
 import com.botvin.util.RandomGenerator;
 
+import java.io.*;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class CarService {
@@ -250,6 +253,7 @@ public class CarService {
     }
 
     // New CarServices' methods from 17-th lesson
+    //findManafacturerByPrice Знайти машини дорожчі за ціну Х і показати їхнього виробника
     public List<Car> findManafacturerByPrice(final List<Car> cars) {
         final List<Car> expensiveCar = cars.stream()
                 .filter(e -> e.getPrice() > 50_000)
@@ -258,6 +262,7 @@ public class CarService {
         return expensiveCar;
     }
 
+    //countSum Порахувати суму машин через reduce
     public int countSum(final List<Car> cars) {
         final int sum = cars.stream()
                 .map(x -> x.getCount())
@@ -309,14 +314,23 @@ public class CarService {
                     if (map.get("manufacturer") != null) {
                         c.setManufacturer((String) map.get("manufacturer"));
                     }
+                    if (map.get("engine") != null) {
+                        c.setEngine((Engine) map.get("engine"));
+                    }
                     if (map.get("color") != null) {
                         c.setColor((Color) map.get("color"));
+                    }
+                    if (map.get("type") != null) {
+                        c.setType((Type) map.get("type"));
                     }
                     if (map.get("count") != null) {
                         c.setCount((int) map.get("count"));
                     }
                     if (map.get("price") != null) {
                         c.setPrice((int) map.get("price"));
+                    }
+                    if (map.get("id") != null) {
+                        c.setId((String) map.get("id"));
                     }
                     return c;
                 })
@@ -335,6 +349,45 @@ public class CarService {
                 .filter(isExpensive)
                 .collect(Collectors.groupingBy(Car::getColor, Collectors.counting()));
         return sortedCars;
+    }
+
+    // Lesson 18
+    public List readXmlCreateList(final String path) {
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        final InputStream inputXml = loader.getResourceAsStream(path);
+        List<String> xmlStringList = new ArrayList<>();
+        byte[] xmlArray = new byte[1000];
+        try {
+            inputXml.read(xmlArray);
+            String xmlData = new String(xmlArray);
+            Matcher matcherXml = Pattern.compile("<(.*?)>(.*)<(.*?)>").matcher(xmlData);
+            while (matcherXml.find()) {
+                xmlStringList.add(matcherXml.group(2));
+            }
+            inputXml.close();
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+        return xmlStringList;
+    }
+
+    public List readJsonCreateList(final String path) {
+        final ClassLoader jsonLoader = Thread.currentThread().getContextClassLoader();
+        final InputStream inputJson = jsonLoader.getResourceAsStream(path);
+        List<String> jsonStringList = new ArrayList<>();
+        byte[] jsonArray = new byte[1000];
+        try {
+            inputJson.read(jsonArray);
+            String jsonData = new String(jsonArray);
+            Matcher matcherJson = Pattern.compile("(.*?:)(?:\\\"|\\'|\\ )(.*?\\\"|\\')(.*\\w)(.*)").matcher(jsonData);
+            while (matcherJson.find()) {
+                jsonStringList.add(matcherJson.group(3));
+            }
+            inputJson.close();
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+        return jsonStringList;
     }
 
 /*

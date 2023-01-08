@@ -1,0 +1,9 @@
+{"Car":[
+  {"String": "manufacturer"},
+  {"Engine": "engine"},
+  {"Color": "color"},
+  {"Type": "type"},
+  {"int": "count"},
+  {"int": "price"},
+  {"String": "id"}
+]}
