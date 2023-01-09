@@ -1,9 +1,15 @@
-{"Car":[
-  {"String": "manufacturer"},
-  {"Engine": "engine"},
-  {"Color": "color"},
-  {"Type": "type"},
-  {"int": "count"},
-  {"int": "price"},
-  {"String": "id"}
-]}
+{
+  "car": {
+    "manufacturer": "BMW",
+    "engine": {
+      "power": "3000",
+      "type": "Diesel"
+    },
+    "color": "BLACK",
+    "passengerCount": "4",
+    "id": "306b91c1-4517-428d-b0c6-a4268e934ce5",
+    "typeOfCar": "CAR",
+    "count": "1",
+    "price": "70000"
+  }
+}

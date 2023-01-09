@@ -1,10 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Car>
-	<String>manufacturer</String>
-	<Engine>engine</Engine>
-	<Color>color</Color>
-	<Type>type</Type>
-	<int>count</int>
-	<int>price</int>
-	<String>id</String>
-</Car>
+<car>
+	<manufacturer>BMW</manufacturer>
+	<engine>
+		<power>3000</power>
+		<type>Diesel</type>
+	</engine>
+	<color>BLACK</color>
+	<passengerCount>4</passengerCount>
+	<id>306b91c1-4517-428d-b0c6-a4268e934ce5</id>
+	<typeOfCar>CAR</typeOfCar>
+	<count>1</count>
+	<price>70000</price>
+</car>

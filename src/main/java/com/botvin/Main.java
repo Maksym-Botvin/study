@@ -8,16 +8,13 @@ import com.botvin.util.RandomGenerator;
 import com.sun.jdi.PrimitiveValue;
 import lombok.SneakyThrows;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws UserInputException, InstantiationException, IllegalAccessException {
+    public static void main(String[] args) throws UserInputException, InstantiationException, IllegalAccessException, IOException {
 
         CarService carService = new CarService(new CarRepository());
 /*
@@ -297,39 +294,40 @@ public class Main {
 
         // Lesson 18
 
-        System.out.println();
-
         Car car = carService.create();
 
-        List list1 = carService.readXmlCreateList("src/main/resources/xml/car.xml");
+        System.out.println("*".repeat(200));
+
+        List list1 = carService.readXmlCreateList("xml/car.xml");//src/main/resources/xml/car.xml
         Map<String, Object> map1 = new HashMap<>();
-        map1.put((String) list1.get(0), RandomGenerator.generateRandomManufacture());
-        map1.put((String) list1.get(1), car.getEngine());
-        map1.put((String) list1.get(2), Color.BLACK);
-        map1.put((String) list1.get(3), Type.randomType());
-        map1.put((String) list1.get(4), car.getCount());
-        map1.put((String) list1.get(5), car.getPrice());
-        map1.put((String) list1.get(6), car.getId());
+        map1.put((String) list1.get(1), RandomGenerator.generateRandomManufacture());
+        map1.put((String) list1.get(2), car.getEngine());
+        map1.put((String) list1.get(4), Type.randomType());
+        map1.put((String) list1.get(5), Color.BLACK);
+        map1.put((String) list1.get(7), car.getId());
+        map1.put((String) list1.get(9), car.getCount());
+        map1.put((String) list1.get(10), car.getPrice());
 
         Car newCar1 = carService.mapToObject(map1);
         carService.print(newCar1);
 
-        System.out.println("~".repeat(100));
+        System.out.println();
 
-        List list2 = carService.readJsonCreateList("src/main/resources/json/car.json");
+        List list2 = carService.readJsonCreateList("json/car.json");//src/main/resources/json/car.json
         Map<String, Object> map2 = new HashMap<>();
-        map2.put((String) list2.get(0), RandomGenerator.generateRandomManufacture());
-        map2.put((String) list2.get(1), car.getEngine());
-        map2.put((String) list2.get(2), Color.WHITE);
-        map2.put((String) list2.get(3), Type.randomType());
-        map2.put((String) list2.get(4), car.getCount());
-        map2.put((String) list2.get(5), car.getPrice());
-        map2.put((String) list2.get(6), car.getId());
+        map2.put((String) list2.get(1), RandomGenerator.generateRandomManufacture());
+        map2.put((String) list2.get(2), car.getEngine());
+        map2.put((String) list2.get(4), Type.randomType());
+        map2.put((String) list2.get(5), Color.WHITE);
+        map2.put((String) list2.get(7), car.getId());
+        map2.put((String) list2.get(9), car.getCount());
+        map2.put((String) list2.get(10), car.getPrice());
 
         Car newCar2 = carService.mapToObject(map2);
         carService.print(newCar2);
 
-    }
+        System.out.println("*".repeat(200));
 
+    }
 }
 

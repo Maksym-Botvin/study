@@ -355,14 +355,14 @@ public class CarService {
     public List readXmlCreateList(final String path) {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         final InputStream inputXml = loader.getResourceAsStream(path);
-        List<String> xmlStringList = new ArrayList<>();
+        final List<String> xmlStringList = new ArrayList<>();
         byte[] xmlArray = new byte[1000];
         try {
             inputXml.read(xmlArray);
-            String xmlData = new String(xmlArray);
-            Matcher matcherXml = Pattern.compile("<(.*?)>(.*)<(.*?)>").matcher(xmlData);
+            final String xmlData = new String(xmlArray);
+            final Matcher matcherXml = Pattern.compile("<([a-zA-Z, 0-9]+)(.?\\>)(.*?)").matcher(xmlData);//<([a-zA-Z, 0-9]+)
             while (matcherXml.find()) {
-                xmlStringList.add(matcherXml.group(2));
+                xmlStringList.add(matcherXml.group(1));
             }
             inputXml.close();
         } catch (Exception e) {
@@ -373,21 +373,23 @@ public class CarService {
 
     public List readJsonCreateList(final String path) {
         final ClassLoader jsonLoader = Thread.currentThread().getContextClassLoader();
-        final InputStream inputJson = jsonLoader.getResourceAsStream(path);
-        List<String> jsonStringList = new ArrayList<>();
+        final BufferedInputStream jsonInput = (BufferedInputStream) jsonLoader.getResourceAsStream(path);
+        final List<String> jsonList = new ArrayList<>();
         byte[] jsonArray = new byte[1000];
         try {
-            inputJson.read(jsonArray);
-            String jsonData = new String(jsonArray);
-            Matcher matcherJson = Pattern.compile("(.*?:)(?:\\\"|\\'|\\ )(.*?\\\"|\\')(.*\\w)(.*)").matcher(jsonData);
-            while (matcherJson.find()) {
-                jsonStringList.add(matcherJson.group(3));
+            jsonInput.read(jsonArray);
+            final String jsonData = new String(jsonArray);
+            final Matcher matcherXml = Pattern.compile(
+                    "(?:\\\"|\\')([^\\\"]*)(?:\\\"|\\')(?=:)(?:\\:\\s*)(?:\\\")" +
+                            "?(true|false|[-0-9]+[\\.]*[\\d]*(?=,)|[0-9a-zA-Z\\(\\)\\@\\:\\,\\/\\!\\+\\-\\.\\$\\ \\\\\\']*)" +
+                            "(?:\\\")?").matcher(jsonData);
+            while (matcherXml.find()) {
+                jsonList.add(matcherXml.group(1));
             }
-            inputJson.close();
         } catch (Exception e) {
             e.getStackTrace();
         }
-        return jsonStringList;
+        return jsonList;
     }
 
 /*
