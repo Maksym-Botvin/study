@@ -5,11 +5,16 @@ import com.botvin.model.*;
 import com.botvin.service.CarService;
 import com.botvin.repository.CarRepository;
 import com.botvin.util.RandomGenerator;
+import com.sun.jdi.PrimitiveValue;
+import lombok.SneakyThrows;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws UserInputException, InstantiationException, IllegalAccessException {
+    public static void main(String[] args) throws UserInputException, InstantiationException, IllegalAccessException, IOException {
 
         CarService carService = new CarService(new CarRepository());
 /*
@@ -203,6 +208,8 @@ public class Main {
         System.out.println(mapEngine.toString());
 */
 
+/*
+
         // Lesson 17
 
         Car car = carService.create();
@@ -243,16 +250,18 @@ public class Main {
         //машин є ціна, вища за число Х.
         carService.priceCheck(carList);
 
-        System.out.println();
+        System.out.println("~".repeat(10));
 
         //mapToObject Написати реалізацію Function, яка приймає Map<String, Object> і створює
         //конкретну машину на підставі полів Map
         Map<String, Object> map = new HashMap<>();
-        map.put("type", Type.randomType());
         map.put("manufacturer", RandomGenerator.generateRandomManufacture());
+        map.put("engine", car.getEngine());
         map.put("color", Color.BLACK);
+        map.put("type", Type.randomType());
         map.put("count", car.getCount());
         map.put("price", car.getPrice());
+        map.put("id", car.getId());
 
         Car newCar = carService.mapToObject(map);
         carService.print(newCar);
@@ -280,7 +289,31 @@ public class Main {
 
         carService.innerList(lists);
 
-    }
+        System.out.println();
+*/
 
+        // Lesson 18
+
+        Map<String, String> xmlMap = carService.readFileCreateMap("xml/car.xml");
+        for (Map.Entry<String, String> entry : xmlMap.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+
+        System.out.println();
+
+        System.out.println(carService.mapToCar(xmlMap));
+
+        System.out.println();
+
+        Map<String, String> jsonMap = carService.readFileCreateMap("json/car.json");
+        for (Map.Entry<String, String> entry : jsonMap.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+
+        System.out.println();
+
+        System.out.println(carService.mapToCar(jsonMap));
+
+    }
 }
 
