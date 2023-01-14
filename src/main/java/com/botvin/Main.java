@@ -294,39 +294,25 @@ public class Main {
 
         // Lesson 18
 
-        Car car = carService.create();
-
-        System.out.println("*".repeat(200));
-
-        List list1 = carService.readXmlCreateList("xml/car.xml");//src/main/resources/xml/car.xml
-        Map<String, Object> map1 = new HashMap<>();
-        map1.put((String) list1.get(1), RandomGenerator.generateRandomManufacture());
-        map1.put((String) list1.get(2), car.getEngine());
-        map1.put((String) list1.get(4), Type.randomType());
-        map1.put((String) list1.get(5), Color.BLACK);
-        map1.put((String) list1.get(7), car.getId());
-        map1.put((String) list1.get(9), car.getCount());
-        map1.put((String) list1.get(10), car.getPrice());
-
-        Car newCar1 = carService.mapToObject(map1);
-        carService.print(newCar1);
+        Map<String, String> xmlMap = carService.readFileCreateMap("xml/car.xml");
+        for (Map.Entry<String, String> entry : xmlMap.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
 
         System.out.println();
 
-        List list2 = carService.readJsonCreateList("json/car.json");//src/main/resources/json/car.json
-        Map<String, Object> map2 = new HashMap<>();
-        map2.put((String) list2.get(1), RandomGenerator.generateRandomManufacture());
-        map2.put((String) list2.get(2), car.getEngine());
-        map2.put((String) list2.get(4), Type.randomType());
-        map2.put((String) list2.get(5), Color.WHITE);
-        map2.put((String) list2.get(7), car.getId());
-        map2.put((String) list2.get(9), car.getCount());
-        map2.put((String) list2.get(10), car.getPrice());
+        System.out.println(carService.mapToCar(xmlMap));
 
-        Car newCar2 = carService.mapToObject(map2);
-        carService.print(newCar2);
+        System.out.println();
 
-        System.out.println("*".repeat(200));
+        Map<String, String> jsonMap = carService.readFileCreateMap("json/car.json");
+        for (Map.Entry<String, String> entry : jsonMap.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+
+        System.out.println();
+
+        System.out.println(carService.mapToCar(jsonMap));
 
     }
 }

@@ -352,44 +352,75 @@ public class CarService {
     }
 
     // Lesson 18
-    public List readXmlCreateList(final String path) {
+    public Map readFileCreateMap(final String path) {
+        String regex = "";
+        if (path.endsWith(".xml")) {
+            regex = "<(.*?)>(.*)<(.*?)>";
+        } else if (path.endsWith(".json")) {
+            regex = "(?:\\\"|\\')([^\\\"]*)(?:\\\"|\\')(?=:)(?:\\:\\s*)(?:\\\")?(true|false|[-0-9]+[\\.]*[\\d]*(?=,)|[0-9a-zA-Z\\(\\)\\@\\:\\,\\/\\!\\+\\-\\.\\$\\ \\\\\\']*)(?:\\\")?";
+        } else {
+            throw new NullPointerException("Wrong file!");
+        }
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        final InputStream inputXml = loader.getResourceAsStream(path);
-        final List<String> xmlStringList = new ArrayList<>();
-        byte[] xmlArray = new byte[1000];
+        final BufferedInputStream input = (BufferedInputStream) loader.getResourceAsStream(path);
+        final Map<String, String> carMap = new LinkedHashMap<>();// HashMap
+        final byte[] array = new byte[1000];
         try {
-            inputXml.read(xmlArray);
-            final String xmlData = new String(xmlArray);
-            final Matcher matcherXml = Pattern.compile("<([a-zA-Z, 0-9]+)(.?\\>)(.*?)").matcher(xmlData);//<([a-zA-Z, 0-9]+)
-            while (matcherXml.find()) {
-                xmlStringList.add(matcherXml.group(1));
+            input.read(array);
+            final String data = new String(array);
+            final Matcher matcher = Pattern.compile(regex).matcher(data);
+            while (matcher.find()) {
+                carMap.put(matcher.group(1), matcher.group(2));
             }
-            inputXml.close();
-        } catch (Exception e) {
+            input.close();
+        } catch (
+                Exception e) {
             e.getStackTrace();
         }
-        return xmlStringList;
+        return carMap;
     }
 
-    public List readJsonCreateList(final String path) {
-        final ClassLoader jsonLoader = Thread.currentThread().getContextClassLoader();
-        final BufferedInputStream jsonInput = (BufferedInputStream) jsonLoader.getResourceAsStream(path);
-        final List<String> jsonList = new ArrayList<>();
-        byte[] jsonArray = new byte[1000];
-        try {
-            jsonInput.read(jsonArray);
-            final String jsonData = new String(jsonArray);
-            final Matcher matcherXml = Pattern.compile(
-                    "(?:\\\"|\\')([^\\\"]*)(?:\\\"|\\')(?=:)(?:\\:\\s*)(?:\\\")" +
-                            "?(true|false|[-0-9]+[\\.]*[\\d]*(?=,)|[0-9a-zA-Z\\(\\)\\@\\:\\,\\/\\!\\+\\-\\.\\$\\ \\\\\\']*)" +
-                            "(?:\\\")?").matcher(jsonData);
-            while (matcherXml.find()) {
-                jsonList.add(matcherXml.group(1));
-            }
-        } catch (Exception e) {
-            e.getStackTrace();
+    private void setFieldsOfCar(Map<String, String> mapByFile, Car car) {
+        Optional.ofNullable(mapByFile.get("manufacturer")).
+                ifPresent(car::setManufacturer);
+        Optional.ofNullable(mapByFile.get("power")).
+                ifPresent(s -> car.getEngine().setPower(Integer.parseInt(s)));
+        Optional.ofNullable(mapByFile.get("color")).
+                ifPresent(s -> car.setColor(Color.valueOf(s)));
+        Optional.ofNullable(mapByFile.get("passengerCount")).
+                ifPresent(s -> ((PassengerCar) car).setPassengerCount(Integer.parseInt(s)));
+        Optional.ofNullable(mapByFile.get("loadCapacity")).
+                ifPresent(s -> ((Truck) car).setLoadCapacity(Integer.parseInt(s)));
+        Optional.ofNullable(mapByFile.get("id")).
+                ifPresent(car::setId);
+        Optional.ofNullable(mapByFile.get("typeOfCar")).
+                ifPresent(s -> car.setType(Type.CAR));
+        Optional.ofNullable(mapByFile.get("count")).
+                ifPresent(s -> car.setCount(Integer.parseInt(s)));
+        Optional.ofNullable(mapByFile.get("price")).
+                ifPresent(s -> car.setPrice(Integer.parseInt(s)));
+    }
+
+    public Car mapToCar(Map<String, String> mapByFile) {
+        if (mapByFile == null) {
+            throw new NullPointerException("Map not exist");
         }
-        return jsonList;
+        final Function<Map<String, String>, Car> function = m -> {
+            if (m.get("typeOfCar").equals("CAR")) {
+                PassengerCar passengerCar = new PassengerCar();
+                passengerCar.setEngine(new Engine("Diesel"));
+                setFieldsOfCar(m, passengerCar);
+                return passengerCar;
+            } else if (m.get("typeOfCar").equals("TRUCK")) {
+                Truck truck = new Truck();
+                truck.setEngine(new Engine("Benzine"));
+                setFieldsOfCar(m, truck);
+                return truck;
+            } else {
+                throw new NullPointerException("Type of car not exist");
+            }
+        };
+        return function.apply(mapByFile);
     }
 
 /*
