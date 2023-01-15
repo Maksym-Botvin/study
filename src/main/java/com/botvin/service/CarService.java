@@ -1,7 +1,9 @@
 package com.botvin.service;
 
 import com.botvin.model.*;
-import com.botvin.repository.CarRepository;
+import com.botvin.repository.CarArrayRepository;
+import com.botvin.repository.CarListRepository;
+import com.botvin.repository.Crud;
 import com.botvin.util.RandomGenerator;
 
 import java.io.*;
@@ -13,11 +15,31 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class CarService {
-    private Random random = new Random();
-    private CarRepository carRepository;
+    private final Crud<Car> carArrayRepository;
+    private final Random random = new Random();
+    private static CarService instance;
 
-    public CarService(CarRepository carRepository) {
-        this.carRepository = carRepository;
+    //private CarArrayRepository carArrayRepository;
+
+    //--------------------------------------------------------
+    public CarService(CarArrayRepository carArrayRepository) {
+        this.carArrayRepository = carArrayRepository;
+    }
+    //--------------------------------------------------------
+    private CarService(final Crud<Car> repository) {
+        this.carArrayRepository = repository;
+    }
+    public static CarService getInstance() {
+        if (instance == null) {
+            instance = new CarService(CarListRepository.getInstance());
+        }
+        return instance;
+    }
+    public static CarService getInstance(final Crud<Car> repository) {
+        if (instance == null) {
+            instance = new CarService(repository);
+        }
+        return instance;
     }
 
     public Car create() {
@@ -38,13 +60,13 @@ public class CarService {
 
     public void createArrayOfCars(final int sizeOfArray) {
         for (int i = 0; i < sizeOfArray; i++) {
-            carRepository.save(create());
+            carArrayRepository.save(create());
         }
     }
 
     public void create(final int count) {
         for (int i = 0; i < count; i++) {
-            carRepository.save(create());
+            carArrayRepository.save(create());
         }
     }
 
@@ -147,7 +169,7 @@ public class CarService {
     }
 
     public void printAll() {
-        Car[] all = carRepository.getAll();
+        Car[] all = carArrayRepository.getAll();
         for (Car car : all) {
             System.out.println(car);
         }
@@ -160,32 +182,28 @@ public class CarService {
     }
      */
     public Car[] getAll() {
-        return carRepository.getAll();
+        return carArrayRepository.getAll();
     }
 
-    public Car find(String id) {
+    public Optional<Car> find(final String id) {
         if (id == null || id.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
-        return carRepository.getById(id);
+        return carArrayRepository.getById(id);
     }
 
     public void delete(String id) {
         if (id == null || id.isEmpty()) {
             return;
         }
-        carRepository.delete(id);
+        carArrayRepository.delete(id);
     }
 
-    public void changeRandomColor(String id) {
+    public void changeRandomColor(final String id) {
         if (id == null || id.isEmpty()) {
             return;
         }
-        Car car = find(id);
-        if (car == null) {
-            return;
-        }
-        findAndChangeRandomColor(car);
+        find(id).ifPresent(this::findAndChangeRandomColor);
     }
 
     private void findAndChangeRandomColor(Car car) {
@@ -194,12 +212,11 @@ public class CarService {
         do {
             randomColor = getRandomColor();
         } while (randomColor == color);
-        carRepository.updateColor(car.getId(), randomColor);
+        carArrayRepository.updateColor(car.getId(), randomColor);
     }
 
-
     public void insert(String id) {
-        carRepository.insert(id);
+        carArrayRepository.insert(id);
     }
 
     public static void check(Car car) {

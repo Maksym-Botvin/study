@@ -3,36 +3,55 @@ package com.botvin.repository;
 import com.botvin.model.Car;
 import com.botvin.model.Color;
 
-public class CarRepository implements ParameterizedInterfaceCarRepository<Car> {
+import java.util.Optional;
+
+public class CarArrayRepository implements Crud<Car> {
 
     private static Car[] cars = new Car[10];
+    //-----------------------------------------
+    private static CarArrayRepository instance;
 
-    public void save(Car car) {
-        int index = putCar(car);
+    public CarArrayRepository() {
+    }
+
+    public static CarArrayRepository getInstance() {
+        if (instance == null) {
+            instance = new CarArrayRepository();
+        }
+        return instance;
+    }
+    //--------------------------------------------
+
+    @Override
+    public void save(final Car car) {
+        final int index = putCar(car);
         if (index == cars.length) {
-            int oldLength = cars.length;
+            final int oldLength = cars.length;
             increaseArray();
             cars[oldLength] = car;
         }
     }
 
+    @Override
     public Car[] getAll() {
-        int newLength = foundLength();
-        Car[] newCars = new Car[newLength];
+        final int newLength = foundLength();
+        final Car[] newCars = new Car[newLength];
         System.arraycopy(cars, 0, newCars, 0, newLength);
         return newCars;
     }
 
-    public Car getById(String id) {
+    @Override
+    public Optional<Car> getById(final String id) {
         for (Car car : cars) {
             if (car.getId().equals(id)) {
-                return car;
+                return Optional.of(car);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    public void delete(String id) {
+    @Override
+    public void delete(final String id) {
         int index = 0;
         for (; index < cars.length; index++) {
             if (cars[index].getId().equals(id)) {
@@ -65,12 +84,8 @@ public class CarRepository implements ParameterizedInterfaceCarRepository<Car> {
     // якщо в нас масив масив заповнений (10 машин), то якщо ми хочемо записати нову машину, наприклад, в 2 комірку
     // то викликаємо метод increaseArray(); та робимо зсув "старих" машин вправо
 
-
-    public void updateColor(String id, Color color) {
-        Car car = getById(id);
-        if (car != null) {
-            car.setColor(color);
-        }
+    public void updateColor(final String id, final Color color) {
+        getById(id).ifPresent(car -> car.setColor(color));
     }
 
     private int foundLength() {

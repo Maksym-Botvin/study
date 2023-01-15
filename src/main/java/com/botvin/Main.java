@@ -1,22 +1,16 @@
 package com.botvin;
 
-import com.botvin.container.*;
 import com.botvin.model.*;
 import com.botvin.service.CarService;
-import com.botvin.repository.CarRepository;
-import com.botvin.util.RandomGenerator;
-import com.sun.jdi.PrimitiveValue;
-import lombok.SneakyThrows;
+import com.botvin.repository.CarArrayRepository;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws UserInputException, InstantiationException, IllegalAccessException, IOException {
 
-        CarService carService = new CarService(new CarRepository());
+        CarService carService = new CarService(new CarArrayRepository());
 /*
         //Lesson 11
         Object firstCar;
