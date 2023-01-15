@@ -1,20 +1,45 @@
 package com.botvin.service;
 
 import com.botvin.model.*;
-import com.botvin.repository.CarRepository;
+import com.botvin.repository.CarArrayRepository;
+import com.botvin.repository.CarListRepository;
+import com.botvin.repository.Crud;
 import com.botvin.util.RandomGenerator;
 
+import java.io.*;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class CarService {
-    private Random random = new Random();
-    private CarRepository carRepository;
+    private final Crud<Car> carArrayRepository;
+    private final Random random = new Random();
+    private static CarService instance;
 
-    public CarService(CarRepository carRepository) {
-        this.carRepository = carRepository;
+    //private CarArrayRepository carArrayRepository;
+
+    //--------------------------------------------------------
+    public CarService(CarArrayRepository carArrayRepository) {
+        this.carArrayRepository = carArrayRepository;
+    }
+    //--------------------------------------------------------
+    private CarService(final Crud<Car> repository) {
+        this.carArrayRepository = repository;
+    }
+    public static CarService getInstance() {
+        if (instance == null) {
+            instance = new CarService(CarListRepository.getInstance());
+        }
+        return instance;
+    }
+    public static CarService getInstance(final Crud<Car> repository) {
+        if (instance == null) {
+            instance = new CarService(repository);
+        }
+        return instance;
     }
 
     public Car create() {
@@ -35,13 +60,13 @@ public class CarService {
 
     public void createArrayOfCars(final int sizeOfArray) {
         for (int i = 0; i < sizeOfArray; i++) {
-            carRepository.save(create());
+            carArrayRepository.save(create());
         }
     }
 
     public void create(final int count) {
         for (int i = 0; i < count; i++) {
-            carRepository.save(create());
+            carArrayRepository.save(create());
         }
     }
 
@@ -144,7 +169,7 @@ public class CarService {
     }
 
     public void printAll() {
-        Car[] all = carRepository.getAll();
+        Car[] all = carArrayRepository.getAll();
         for (Car car : all) {
             System.out.println(car);
         }
@@ -157,32 +182,28 @@ public class CarService {
     }
      */
     public Car[] getAll() {
-        return carRepository.getAll();
+        return carArrayRepository.getAll();
     }
 
-    public Car find(String id) {
+    public Optional<Car> find(final String id) {
         if (id == null || id.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
-        return carRepository.getById(id);
+        return carArrayRepository.getById(id);
     }
 
     public void delete(String id) {
         if (id == null || id.isEmpty()) {
             return;
         }
-        carRepository.delete(id);
+        carArrayRepository.delete(id);
     }
 
-    public void changeRandomColor(String id) {
+    public void changeRandomColor(final String id) {
         if (id == null || id.isEmpty()) {
             return;
         }
-        Car car = find(id);
-        if (car == null) {
-            return;
-        }
-        findAndChangeRandomColor(car);
+        find(id).ifPresent(this::findAndChangeRandomColor);
     }
 
     private void findAndChangeRandomColor(Car car) {
@@ -191,12 +212,11 @@ public class CarService {
         do {
             randomColor = getRandomColor();
         } while (randomColor == color);
-        carRepository.updateColor(car.getId(), randomColor);
+        carArrayRepository.updateColor(car.getId(), randomColor);
     }
 
-
     public void insert(String id) {
-        carRepository.insert(id);
+        carArrayRepository.insert(id);
     }
 
     public static void check(Car car) {
@@ -250,6 +270,7 @@ public class CarService {
     }
 
     // New CarServices' methods from 17-th lesson
+    //findManafacturerByPrice Знайти машини дорожчі за ціну Х і показати їхнього виробника
     public List<Car> findManafacturerByPrice(final List<Car> cars) {
         final List<Car> expensiveCar = cars.stream()
                 .filter(e -> e.getPrice() > 50_000)
@@ -258,6 +279,7 @@ public class CarService {
         return expensiveCar;
     }
 
+    //countSum Порахувати суму машин через reduce
     public int countSum(final List<Car> cars) {
         final int sum = cars.stream()
                 .map(x -> x.getCount())
@@ -309,14 +331,23 @@ public class CarService {
                     if (map.get("manufacturer") != null) {
                         c.setManufacturer((String) map.get("manufacturer"));
                     }
+                    if (map.get("engine") != null) {
+                        c.setEngine((Engine) map.get("engine"));
+                    }
                     if (map.get("color") != null) {
                         c.setColor((Color) map.get("color"));
+                    }
+                    if (map.get("type") != null) {
+                        c.setType((Type) map.get("type"));
                     }
                     if (map.get("count") != null) {
                         c.setCount((int) map.get("count"));
                     }
                     if (map.get("price") != null) {
                         c.setPrice((int) map.get("price"));
+                    }
+                    if (map.get("id") != null) {
+                        c.setId((String) map.get("id"));
                     }
                     return c;
                 })
@@ -335,6 +366,78 @@ public class CarService {
                 .filter(isExpensive)
                 .collect(Collectors.groupingBy(Car::getColor, Collectors.counting()));
         return sortedCars;
+    }
+
+    // Lesson 18
+    public Map readFileCreateMap(final String path) {
+        String regex = "";
+        if (path.endsWith(".xml")) {
+            regex = "<(.*?)>(.*)<(.*?)>";
+        } else if (path.endsWith(".json")) {
+            regex = "(?:\\\"|\\')([^\\\"]*)(?:\\\"|\\')(?=:)(?:\\:\\s*)(?:\\\")?(true|false|[-0-9]+[\\.]*[\\d]*(?=,)|[0-9a-zA-Z\\(\\)\\@\\:\\,\\/\\!\\+\\-\\.\\$\\ \\\\\\']*)(?:\\\")?";
+        } else {
+            throw new NullPointerException("Wrong file!");
+        }
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        final BufferedInputStream input = (BufferedInputStream) loader.getResourceAsStream(path);
+        final Map<String, String> carMap = new LinkedHashMap<>();// HashMap
+        final byte[] array = new byte[1000];
+        try {
+            input.read(array);
+            final String data = new String(array);
+            final Matcher matcher = Pattern.compile(regex).matcher(data);
+            while (matcher.find()) {
+                carMap.put(matcher.group(1), matcher.group(2));
+            }
+            input.close();
+        } catch (
+                Exception e) {
+            e.getStackTrace();
+        }
+        return carMap;
+    }
+
+    private void setFieldsOfCar(Map<String, String> mapByFile, Car car) {
+        Optional.ofNullable(mapByFile.get("manufacturer")).
+                ifPresent(car::setManufacturer);
+        Optional.ofNullable(mapByFile.get("power")).
+                ifPresent(s -> car.getEngine().setPower(Integer.parseInt(s)));
+        Optional.ofNullable(mapByFile.get("color")).
+                ifPresent(s -> car.setColor(Color.valueOf(s)));
+        Optional.ofNullable(mapByFile.get("passengerCount")).
+                ifPresent(s -> ((PassengerCar) car).setPassengerCount(Integer.parseInt(s)));
+        Optional.ofNullable(mapByFile.get("loadCapacity")).
+                ifPresent(s -> ((Truck) car).setLoadCapacity(Integer.parseInt(s)));
+        Optional.ofNullable(mapByFile.get("id")).
+                ifPresent(car::setId);
+        Optional.ofNullable(mapByFile.get("typeOfCar")).
+                ifPresent(s -> car.setType(Type.CAR));
+        Optional.ofNullable(mapByFile.get("count")).
+                ifPresent(s -> car.setCount(Integer.parseInt(s)));
+        Optional.ofNullable(mapByFile.get("price")).
+                ifPresent(s -> car.setPrice(Integer.parseInt(s)));
+    }
+
+    public Car mapToCar(Map<String, String> mapByFile) {
+        if (mapByFile == null) {
+            throw new NullPointerException("Map not exist");
+        }
+        final Function<Map<String, String>, Car> function = m -> {
+            if (m.get("typeOfCar").equals("CAR")) {
+                PassengerCar passengerCar = new PassengerCar();
+                passengerCar.setEngine(new Engine("Diesel"));
+                setFieldsOfCar(m, passengerCar);
+                return passengerCar;
+            } else if (m.get("typeOfCar").equals("TRUCK")) {
+                Truck truck = new Truck();
+                truck.setEngine(new Engine("Benzine"));
+                setFieldsOfCar(m, truck);
+                return truck;
+            } else {
+                throw new NullPointerException("Type of car not exist");
+            }
+        };
+        return function.apply(mapByFile);
     }
 
 /*
